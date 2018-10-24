@@ -1,0 +1,22 @@
+swagger: '2.0'
+info:
+  title: Track Finances API
+  description: Here goes API of Track Finances.
+  version: "0.0.1"
+
+schemes:
+  - "http"
+
+paths:
+  /:
+    get:
+      summary: Status of service.
+      description: Here returns status of API.
+      responses:
+        '200':    # status code
+          description: Returns status of Track Finances service state
+          content:
+            application/json:
+              schema:
+                status:
+                  type: string

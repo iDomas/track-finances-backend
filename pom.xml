@@ -46,11 +46,33 @@
 		</dependency>
 	</dependencies>
 
+
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>2.3.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/swagger/track-finances-api.yaml</inputSpec>
+							<language>java</language>
+							<configOptions>
+								<sourceFolder>src/gen/java/main</sourceFolder>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
