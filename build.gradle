@@ -49,5 +49,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation('com.fasterxml.jackson.module:jackson-module-kotlin')
 	runtime('org.postgresql:postgresql:42.2.5')
+
+	compile('org.springframework.boot:spring-boot-starter-security')
+	compile('org.springframework.security.oauth:spring-security-oauth2')
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
