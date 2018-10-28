@@ -17,7 +17,6 @@ class ExpensesController(private val expensesRepository: ExpensesRepository, pri
     @PostMapping("/expenses")
     @ResponseBody
     fun insertExpense(@RequestBody expenses: Expenses): Expenses {
-        println(expenses)
         expensesRepository.save(expenses);
         return expenses;
     }
