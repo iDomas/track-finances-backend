@@ -1,15 +1,14 @@
 package com.trackfinances.backend.trackfinancesbackend.model
 
 import java.math.BigDecimal
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
+import javax.persistence.*
 
 @Entity
+@Table(name = "expenses")
 data class Expenses(
-        @Id @GeneratedValue val id: Long? = null,
-        val userId: Long,
-        val cost: BigDecimal,
-        val title: String,
-        val description: String
+        @Id @GeneratedValue( strategy = GenerationType.AUTO ) var id: Long? = null,
+        var user_id: Long,
+        var price: BigDecimal? = null,
+        var title: String? = null,
+        var description: String? = null
 )
