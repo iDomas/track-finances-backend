@@ -6,7 +6,7 @@ import javax.persistence.*
 @Table(name = "users")
 data class Users (
         @Id @GeneratedValue( strategy = GenerationType.AUTO ) var id: Long,
-        var username: String,
+        @Column(unique = true) var username: String,
         var password: String
 )
 //{
