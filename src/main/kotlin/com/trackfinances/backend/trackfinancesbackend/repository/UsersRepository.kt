@@ -1,7 +1,7 @@
 package com.trackfinances.backend.trackfinancesbackend.repository
 
 import com.trackfinances.backend.trackfinancesbackend.model.Users
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface UsersRepository : CrudRepository<Users, Long> {
+interface UsersRepository : JpaRepository<Users, Long> {
 }
