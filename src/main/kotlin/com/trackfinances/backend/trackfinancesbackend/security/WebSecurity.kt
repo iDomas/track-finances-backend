@@ -3,6 +3,7 @@ package com.trackfinances.backend.trackfinancesbackend.security
 import com.trackfinances.backend.trackfinancesbackend.security.SecurityConstants.Companion.SIGN_UP_URL
 import com.trackfinances.backend.trackfinancesbackend.service.UserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import java.util.*
 
 @EnableWebSecurity
 class WebSecurity(
@@ -22,7 +24,8 @@ class WebSecurity(
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity?) {
-        http?.cors()?.and()?.csrf()?.disable()?.authorizeRequests()
+        http?.cors()?.and()?.csrf()?.disable()
+                ?.authorizeRequests()
                 ?.antMatchers(HttpMethod.POST, SIGN_UP_URL)?.permitAll()
                 ?.anyRequest()?.authenticated()
                 ?.and()
@@ -40,7 +43,10 @@ class WebSecurity(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val source: UrlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
+        val configuration: CorsConfiguration = CorsConfiguration();
+        configuration.allowedMethods = Arrays.asList("PUT", "DELETE")
+        configuration.applyPermitDefaultValues()
+        source.registerCorsConfiguration("/**", configuration)
         return source
     }
 
