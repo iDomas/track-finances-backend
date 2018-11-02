@@ -32,13 +32,13 @@ class ExpensesController(private val expensesRepository: ExpensesRepository, pri
         return expenses;
     }
 
-    @GetMapping(value = ["/{id}", "/{id}/"])
+    @GetMapping(value = ["/{expenseId}", "/{expenseId}/"])
     @ResponseBody
-    fun getExpenseById(@PathVariable("id") id: Long): Expenses {
+    fun getExpenseById(@PathVariable("expenseId") expenseId: Long): Expenses {
         val user: Any = SecurityContextHolder.getContext().authentication.principal
         val userId: Long = usersRepository.findByUsername(user.toString()).id
 
-        val expense: Expenses = expensesRepository.findById(id).get()
+        val expense: Expenses = expensesRepository.findById(expenseId).get()
 
         if (expense.userId != userId) {
             throw NotFoundException("expense.userId != userId")
@@ -47,6 +47,24 @@ class ExpensesController(private val expensesRepository: ExpensesRepository, pri
         return expense
     }
 
+    @PutMapping(value = ["/{expenseId}", "/{expenseId}/"])
+    @ResponseBody
+    fun updateExpense(@RequestBody expenses: Expenses,
+                      @PathVariable("expenseId") expenseId: Long): Expenses {
+        val user: Any = SecurityContextHolder.getContext().authentication.principal
+        val userId: Long = usersRepository.findByUsername(user.toString()).id
 
+        val expense: Expenses = expensesRepository.findById(expenseId).get()
+
+        expense.price = expenses.price
+        expense.title = expenses.title
+        expense.description = expenses.description
+
+        if (expense.userId != userId) {
+            throw NotFoundException("expense.userId != userId")
+        }
+
+        return expensesRepository.save(expense)
+    }
 
 }
