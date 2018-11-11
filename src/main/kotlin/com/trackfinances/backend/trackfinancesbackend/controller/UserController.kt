@@ -27,8 +27,6 @@ class UserController(private val usersRepository: UsersRepository, private val b
     @GetMapping(value = ["/current", "current"])
     @ResponseBody
     fun getCurrentUser(principal: Principal): Users {
-        principal.name
-        println("Username: ${principal.name}")
         return usersRepository.findByUsername(principal.name)
     }
 
