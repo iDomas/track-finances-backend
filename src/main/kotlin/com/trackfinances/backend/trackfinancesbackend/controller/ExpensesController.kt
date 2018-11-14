@@ -19,7 +19,13 @@ class ExpensesController(private val expensesRepository: ExpensesRepository, pri
     fun allExpenses(): List<Expenses> {
         val user: Any = SecurityContextHolder.getContext().authentication.principal
         val userId: Long = usersRepository.findByUsername(user.toString()).id
-        return expensesRepository.getAllByUserId(userId);
+
+        val expenses = expensesRepository.getAllByUserId(userId)
+
+        if (expenses.isEmpty())
+            return emptyList()
+
+        return expenses;
     }
 
     @PostMapping(value = ["","/"])
