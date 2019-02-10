@@ -75,8 +75,9 @@ class ExpensesController(private val expensesRepository: ExpensesRepository, pri
 
     @DeleteMapping(value = ["/{expenseId}", "/{expenseId}/"])
     @ResponseBody
-    fun deleteExpense(@PathVariable("expenseId") expenseId: Long): Unit {
-        return expensesRepository.deleteById(expenseId)
+    fun deleteExpense(@PathVariable("expenseId") expenseId: Long): String {
+        expensesRepository.deleteById(expenseId)
+        return "{\"status\":\"OK\"}"
     }
 
 }
