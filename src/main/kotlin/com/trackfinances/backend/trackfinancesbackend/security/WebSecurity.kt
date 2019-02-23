@@ -1,5 +1,6 @@
 package com.trackfinances.backend.trackfinancesbackend.security
 
+import com.trackfinances.backend.trackfinancesbackend.security.SecurityConstants.Companion.SEARCH_BY_USERNAME_URL
 import com.trackfinances.backend.trackfinancesbackend.security.SecurityConstants.Companion.SIGN_UP_URL
 import com.trackfinances.backend.trackfinancesbackend.service.UserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
@@ -26,7 +27,7 @@ class WebSecurity(
     override fun configure(http: HttpSecurity?) {
         http?.cors()?.and()?.csrf()?.disable()
                 ?.authorizeRequests()
-                ?.antMatchers(HttpMethod.POST, SIGN_UP_URL)?.permitAll()
+                ?.antMatchers(HttpMethod.POST, SIGN_UP_URL, SEARCH_BY_USERNAME_URL)?.permitAll()
                 ?.anyRequest()?.authenticated()
                 ?.and()
                 ?.addFilter(JWTAuthenticationFilter(authenticationManager()))

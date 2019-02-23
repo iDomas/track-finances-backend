@@ -2,6 +2,8 @@ package com.trackfinances.backend.trackfinancesbackend.controller
 
 import com.trackfinances.backend.trackfinancesbackend.model.Users
 import com.trackfinances.backend.trackfinancesbackend.repository.UsersRepository
+import org.omg.CORBA.Object
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
@@ -28,6 +30,26 @@ class UserController(private val usersRepository: UsersRepository, private val b
     @ResponseBody
     fun getCurrentUser(principal: Principal): Users {
         return usersRepository.findByUsername(principal.name)
+    }
+
+    @PostMapping(value = ["/search-by-username", "search-by-username"])
+    @ResponseBody
+    fun searchByUsername(@RequestBody body: String): String {
+		var returnMessage = "{ \"isUsernameTaken\": false }"
+
+		var user: Users? = null
+		try {
+			user = usersRepository.findByUsername(body)
+		} catch (e: EmptyResultDataAccessException) {
+			println("Err $e")
+		}
+
+
+		if (user != null) {
+			returnMessage = "{ \"isUsernameTaken\": true }"
+		}
+
+        return returnMessage
     }
 
 }
