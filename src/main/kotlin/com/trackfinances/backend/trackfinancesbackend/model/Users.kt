@@ -9,7 +9,3 @@ data class Users (
         @Column(unique = true) var username: String,
         var password: String
 )
-//{
-//    @OneToMany(mappedBy = "users")
-//    val expenses: MutableSet<Expenses> = HashSet()
-//}

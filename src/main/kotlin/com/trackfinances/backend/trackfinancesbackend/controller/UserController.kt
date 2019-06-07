@@ -4,6 +4,7 @@ import com.trackfinances.backend.trackfinancesbackend.model.Users
 import com.trackfinances.backend.trackfinancesbackend.repository.UsersRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 @RestController()
 @RequestMapping("/users")
@@ -21,6 +22,12 @@ class UserController(private val usersRepository: UsersRepository, private val b
         users.password = bCryptPasswordEncoder.encode(users.password)
         usersRepository.save(users);
         return users;
+    }
+
+    @GetMapping(value = ["/current", "current"])
+    @ResponseBody
+    fun getCurrentUser(principal: Principal): Users {
+        return usersRepository.findByUsername(principal.name)
     }
 
 }

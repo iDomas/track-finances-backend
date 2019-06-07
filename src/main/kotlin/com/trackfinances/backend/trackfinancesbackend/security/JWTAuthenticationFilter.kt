@@ -46,7 +46,7 @@ class JWTAuthenticationFilter(private val authManager: AuthenticationManager) : 
     override fun successfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?, chain: FilterChain?, authResult: Authentication?) {
         val token: String = JWT.create()
                 .withSubject((authResult?.principal as User).username)
-                .withExpiresAt(Date(System.currentTimeMillis() + EXPIRATION_TIME)) // TODO If token last forever, than here is the problem
+                .withExpiresAt(Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(Algorithm.HMAC512(SECRET))
         response?.addHeader(HEADER_STRING, TOKEN_PREFIX + token)
 
