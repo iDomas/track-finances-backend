@@ -4,7 +4,6 @@ import com.trackfinances.backend.trackfinancesbackend.security.SecurityConstants
 import com.trackfinances.backend.trackfinancesbackend.security.SecurityConstants.Companion.SIGN_UP_URL
 import com.trackfinances.backend.trackfinancesbackend.service.UserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -19,36 +18,36 @@ import java.util.*
 
 @EnableWebSecurity
 class WebSecurity(
-        private val userDetailsServiceImpl: UserDetailsServiceImpl,
-        private val bCryptPasswordEncoder: BCryptPasswordEncoder
+		private val userDetailsServiceImpl: UserDetailsServiceImpl,
+		private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) : WebSecurityConfigurerAdapter() {
 
-    @Throws(Exception::class)
-    override fun configure(http: HttpSecurity?) {
-        http?.cors()?.and()?.csrf()?.disable()
-                ?.authorizeRequests()
-                ?.antMatchers(HttpMethod.POST, SIGN_UP_URL, SEARCH_BY_USERNAME_URL)?.permitAll()
-                ?.anyRequest()?.authenticated()
-                ?.and()
-                ?.addFilter(JWTAuthenticationFilter(authenticationManager()))
-                ?.addFilter(JWTAuthorizationFilter(authenticationManager()))
-                // this disables session creation on Spring Security
-                ?.sessionManagement()?.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    }
+	@Throws(Exception::class)
+	override fun configure(http: HttpSecurity?) {
+		http?.cors()?.and()?.csrf()?.disable()
+				?.authorizeRequests()
+				?.antMatchers(HttpMethod.POST, SIGN_UP_URL, SEARCH_BY_USERNAME_URL)?.permitAll()
+				?.anyRequest()?.authenticated()
+				?.and()
+				?.addFilter(JWTAuthenticationFilter(authenticationManager()))
+				?.addFilter(JWTAuthorizationFilter(authenticationManager()))
+				// this disables session creation on Spring Security
+				?.sessionManagement()?.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+	}
 
-    @Throws(Exception::class)
-    override fun configure(auth: AuthenticationManagerBuilder?) {
-        auth?.userDetailsService(userDetailsServiceImpl)?.passwordEncoder(bCryptPasswordEncoder)
-    }
+	@Throws(Exception::class)
+	override fun configure(auth: AuthenticationManagerBuilder?) {
+		auth?.userDetailsService(userDetailsServiceImpl)?.passwordEncoder(bCryptPasswordEncoder)
+	}
 
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val source: UrlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
-        val configuration: CorsConfiguration = CorsConfiguration();
-        configuration.allowedMethods = Arrays.asList("POST", "PUT", "DELETE")
-        configuration.applyPermitDefaultValues()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
-    }
+	@Bean
+	fun corsConfigurationSource(): CorsConfigurationSource {
+		val source = UrlBasedCorsConfigurationSource()
+		val configuration = CorsConfiguration()
+		configuration.allowedMethods = Arrays.asList("POST", "PUT", "DELETE")
+		configuration.applyPermitDefaultValues()
+		source.registerCorsConfiguration("/**", configuration)
+		return source
+	}
 
 }
