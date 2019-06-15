@@ -1,36 +1,37 @@
 package com.trackfinances.backend.trackfinancesbackend.controller
 
 import com.trackfinances.backend.trackfinancesbackend.model.Users
-import com.trackfinances.backend.trackfinancesbackend.repository.UsersRepository
+import com.trackfinances.backend.trackfinancesbackend.service.UsersService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.EmptyResultDataAccessException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 
 @RestController()
 @RequestMapping("/users")
-class UserController(private val usersRepository: UsersRepository, private val bCryptPasswordEncoder: BCryptPasswordEncoder) {
+class UserController(
+		@Autowired private val usersService: UsersService
+) {
 
 	@GetMapping(value = ["", "/"])
 	@ResponseBody
 	fun getAllUsers(): List<Users> {
-		return usersRepository.findAll().iterator().asSequence().toList()
+		return usersService.getAllUsers()
 	}
 
 	@PostMapping(value = ["", "/"])
 	@ResponseBody
 	fun insertUser(@RequestBody users: Users): Users {
-		users.password = bCryptPasswordEncoder.encode(users.password)
-		usersRepository.save(users)
-		return users
+		return usersService.insertUser(users)
 	}
 
 	@GetMapping(value = ["/current", "current"])
 	@ResponseBody
 	fun getCurrentUser(principal: Principal): Users {
-		return usersRepository.findByUsername(principal.name)
+		return usersService.getUserByUsername(principal.name)
 	}
 
+	@Deprecated("This endpoint is useless or should be refactored to be used from userService")
 	@PostMapping(value = ["/search-by-username", "search-by-username"])
 	@ResponseBody
 	fun searchByUsername(@RequestBody body: String): String {
@@ -38,7 +39,7 @@ class UserController(private val usersRepository: UsersRepository, private val b
 
 		var user: Users? = null
 		try {
-			user = usersRepository.findByUsername(body)
+			user = usersService.getUserByUsername(body)
 		} catch (e: EmptyResultDataAccessException) {
 			println("Err $e")
 		}
