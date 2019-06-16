@@ -53,4 +53,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-security")
 	compile group: 'com.auth0', name: 'java-jwt', version: '3.4.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+	testCompile group: 'org.springframework.security', name: 'spring-security-test', version: '5.1.5.RELEASE'
+
 }
