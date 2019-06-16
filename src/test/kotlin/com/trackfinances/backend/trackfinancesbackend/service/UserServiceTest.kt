@@ -48,6 +48,8 @@ class UserServiceTest {
 
 		// then
 		assertThat(actual).isNotEmpty
+		assertThat(actual).contains(user1)
+		assertThat(actual).contains(user2)
 		verify(usersRepository, times(1)).findAll()
 	}
 
