@@ -12,6 +12,9 @@ import org.mockito.Mockito
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.junit4.SpringRunner
 import java.math.BigDecimal
@@ -145,7 +148,13 @@ class ExpensesServiceTest {
 				user
 		)
 
-		Mockito.`when`(usersRepository.findByUsername(user.username)).thenReturn(user)
+		val authentication = Mockito.mock(Authentication::class.java)
+		val securityContext = Mockito.mock(SecurityContext::class.java)
+		Mockito.`when`(securityContext.authentication).thenReturn(authentication)
+		Mockito.`when`(securityContext.authentication.principal).thenReturn(user)
+		SecurityContextHolder.setContext(securityContext)
+
+		Mockito.`when`(usersRepository.findByUsername(user.toString())).thenReturn(user)
 		Mockito.`when`(expensesRepository.save(expense)).thenReturn(expense)
 
 		// when
@@ -153,7 +162,88 @@ class ExpensesServiceTest {
 
 		// then
 		assertThat(insertedExpense).isNotNull
+		assertThat(insertedExpense.users).isNotNull
 		assertThat(insertedExpense).isEqualTo(expense)
 		verify(expensesRepository, times(1)).save(expense)
+	}
+
+	@Test
+	@WithMockUser(username = "test", password = "test")
+	fun getExpenseById_ShouldReturn1ExpenseById() {
+		// given
+		val user = Users(
+				1,
+				"test",
+				"test"
+		)
+		val expense = Expenses(
+				1L,
+				BigDecimal(10.99),
+				"Java tut",
+				"Some description",
+				user
+		)
+
+		val authentication = Mockito.mock(Authentication::class.java)
+		val securityContext = Mockito.mock(SecurityContext::class.java)
+		Mockito.`when`(securityContext.authentication).thenReturn(authentication)
+		Mockito.`when`(securityContext.authentication.principal).thenReturn(user)
+		SecurityContextHolder.setContext(securityContext)
+
+		Mockito.`when`(usersRepository.findByUsername(user.toString())).thenReturn(user)
+		val expenseId = 1L
+		Mockito.`when`(expensesRepository.findById(expenseId)).thenReturn(Optional.of(expense))
+
+		// when
+		val actualExpense: Expenses = expensesService.getExpenseById(expenseId)
+
+		// then
+		assertThat(actualExpense).isNotNull
+		assertThat(actualExpense).isEqualTo(expense)
+		verify(expensesRepository, times(1)).findById(expenseId)
+	}
+
+	@Test
+	@WithMockUser(username = "test", password = "test")
+	fun updateExpense_shouldUpdateExpense() {
+		// given
+		val user = Users(
+				1,
+				"test",
+				"test"
+		)
+		val expense = Expenses(
+				1L,
+				BigDecimal(10.99),
+				"Java tut",
+				"Some description",
+				user
+		)
+
+		val authentication = Mockito.mock(Authentication::class.java)
+		val securityContext = Mockito.mock(SecurityContext::class.java)
+		Mockito.`when`(securityContext.authentication).thenReturn(authentication)
+		Mockito.`when`(securityContext.authentication.principal).thenReturn(user)
+		SecurityContextHolder.setContext(securityContext)
+
+		Mockito.`when`(usersRepository.findByUsername(user.toString())).thenReturn(user)
+		val expenseId = 1L
+		Mockito.`when`(expensesRepository.findById(expenseId)).thenReturn(Optional.of(expense))
+
+		expense.title = "test"
+		expense.price = BigDecimal(5.99)
+		expense.description = "Test description"
+		Mockito.`when`(expensesRepository.save(expense)).thenReturn(expense)
+
+		// when
+		val updatedExpense = expensesService.updateExpense(expense, expenseId)
+
+		// then
+		assertThat(updatedExpense).isNotNull
+		assertThat(updatedExpense.users).isNotNull
+		assertThat(updatedExpense.title).isEqualTo("test")
+		assertThat(updatedExpense.price).isEqualTo(BigDecimal(5.99))
+		assertThat(updatedExpense.description).isEqualTo("Test description")
+		verify(expensesRepository, times(1)).findById(expenseId)
 	}
 }

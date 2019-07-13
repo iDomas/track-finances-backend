@@ -42,7 +42,7 @@ class ExpensesService(
 		val expensesUserId: Long? = expense.users?.id
 
 		if (currentUser.id != expensesUserId)
-			throw Exception("NO SUCH USER AND EXPENSE WITH USER_ID: $currentUser.id AND EXPENSE_ID: $expensesUserId")
+			throw Exception("NO SUCH USER AND EXPENSE WITH USER_ID: ${currentUser.id} AND EXPENSE_ID: $expensesUserId")
 
 		return expense
 	}
